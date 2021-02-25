@@ -1,5 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
+<addon id="plugin.video.infotec.iptv" name="[COLOR red]Infotec[/COLOR][COLOR yellow]-[/COLOR][COLOR green]IPTV[/COLOR]" version="0.0.28" provider-name="Anonymous">
+  <requires>
+	<import addon="script.module.t0mm0.common" version="2.0.0"/>
+    <import addon="script.module.beautifulsoup" version="3.2.1"/>
+    <import addon="script.module.simple.downloader" version="0.9.4"/>
+    <import addon="script.module.beautifulsoup4" />
+    <import addon="script.module.simple.downloader" version="0.9.4"/>
+    <import addon="script.module.requests" />
+    <import addon="script.module.httplib2" />
+    <import addon="script.module.youtube.dl" />
+    <import addon="plugin.video.youtube" version="3.0.0"/>
+    <import addon="script.module.urlresolver" optional="true"/>
+    <import addon="script.module.simplejson" />
+    <import addon="script.common.plugin.cache" version="2.5.2"/>
+    <import addon="script.module.metahandler" version="2.5.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="pt">O addon [COLOR red][B]Infotec[/B][/COLOR][COLOR yellow]-[/COLOR][COLOR green][B]IPTV[/B][/COLOR]:</summary>
+	<summary lang="en">The addon [COLOR red][B]Infotec[/B][/COLOR][COLOR yellow]-[/COLOR][COLOR green][B]IPTV[/B][/COLOR]:</summary>
+    <description lang="pt">Ã© um addon brasileiro. Todos os links sÃ£o encontrados de forma livre na internet.</description>
+    <description lang="en">is a Brazilian addon. All links are found freely on the internet.</description>
+	<platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.iptv.Vip" name="IPTV VIP" version="0.0.4" provider-name="INFOTEC-IPTV">
+<requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.t0mm0.common"/>
+    <import addon="script.module.beautifulsoup"/>
+    <import addon="script.module.beautifulsoup4"/>
+    <import addon="script.module.simple.downloader"/>
+    <import addon="script.module.requests"/>
+    <import addon="script.module.httplib2"/>
+    <import addon="script.module.urlresolver"/>
+    <import addon="script.module.simplejson"/>
+    <import addon="script.common.plugin.cache"/>
+    <import addon="script.module.metahandler"/>
+</requires>
+
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+	<summary lang="en"></summary>
+    <summary lang="pt"></summary>
+    <description lang="en"></description>
+	<description lang="pt"></description>
+     <disclaimer lang="en"></disclaimer>
+	 <disclaimer lang="pt"></disclaimer>
+    <platform>all</platform>
+	<assets>
+       <icon>icon.png</icon>
+       <fanart>fanart.jpg</fanart>
+       <screenshot>resources/screenshots/1.jpg</screenshot>
+       <screenshot>resources/screenshots/2.jpg</screenshot>
+       <screenshot>resources/screenshots/3.jpg</screenshot>
+    </assets>
+  </extension>
+</addon>
+
 <addon id="repo.kodinfotec" name="Repository Kodinfotec" version="0.0.6" provider-name="Anonymous">
   <requires>
   	<import addon="xbmc.python" version="2.1.0"/>
@@ -8,9 +72,9 @@
 	<extension point="xbmc.addon.repository" name="Repository Kodinfotec">
 
 <dir minversion="17.9.0">
-		<info compressed="false">https://raw.githubusercontent.com/kodinfotec/online/master/addons.xml</info>
-		<checksum>https://raw.githubusercontent.com/kodinfotec/online/master/addons.xml.md5</checksum>
-		<datadir zip="true">https://raw.githubusercontent.com/kodinfotec/online/master</datadir>
+		<info compressed="false">https://raw.githubusercontent.com/kodinfotec/kodinfotec.github.io/master/addons.xml</info>
+		<checksum>https://raw.githubusercontent.com/kodinfotec/kodinfotec.github.io/master/addons.xml.md5</checksum>
+		<datadir zip="true">https://raw.githubusercontent.com/kodinfotec/kodinfotec.github.io/master</datadir>
 </dir>
 	</extension>
 	<extension point="xbmc.addon.metadata">
