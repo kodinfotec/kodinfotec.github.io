@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.Infotec-Kodi-Online"
        name="Infotec-Kodi-Online"
-       version="1.0.4"
+       version="1.0.5"
        provider-name="By Infotec-Kodi-Online">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
