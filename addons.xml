@@ -210,7 +210,7 @@
   <extension library="lib" point="xbmc.python.module" />
 </addon>
 
-<addon id="script.module.slyguy" name="SlyGuy Common" provider-name="SlyGuy" version="0.32.7">
+<addon id="script.module.slyguy" name="SlyGuy Common" provider-name="SlyGuy" version="0.34.4">
   <requires>
     <import addon="repository.slyguy"/>
   </requires>
@@ -273,7 +273,7 @@
     </extension>
 </addon>
 
-<addon id="slyguy.pluto.tv.provider" name="Pluto TV" provider-name="SlyGuy" version="0.4.2">
+<addon id="slyguy.pluto.tv.provider" name="Pluto TV" provider-name="SlyGuy" version="0.4.5">
   <requires>
     <import addon="script.module.slyguy"/>
   </requires>
@@ -286,7 +286,7 @@
     <license></license>
     <language></language>
     <website></website>
-    <news>Add alternative stream selection</news>
+    <news>New layout!</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
