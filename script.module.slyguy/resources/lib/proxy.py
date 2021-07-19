@@ -8,16 +8,17 @@ from xml.dom.minidom import parseString
 from collections import defaultdict
 from functools import cmp_to_key
 
+import arrow
 from six.moves.BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from six.moves.socketserver import ThreadingMixIn
 from six.moves.urllib.parse import urlparse, urljoin, unquote_plus, parse_qsl, quote_plus
-from kodi_six import xbmc, xbmcvfs
+from kodi_six import xbmc
 from requests import ConnectionError
 
 from slyguy import settings, gui, inputstream
 from slyguy.log import log
 from slyguy.constants import *
-from slyguy.util import check_port, remove_file, get_kodi_string, set_kodi_string, fix_url
+from slyguy.util import check_port, remove_file, get_kodi_string, set_kodi_string, fix_url, run_plugin
 from slyguy.plugin import failed_playback
 from slyguy.exceptions import Exit
 from slyguy.session import RawSession
@@ -129,8 +130,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         url = add_url_args(url, _data_path=data_path, _headers=json.dumps(self._headers))
 
         log.debug('PLUGIN REQUEST: {}'.format(url))
-        dirs, files = xbmcvfs.listdir(url)
-
+        dirs, files = run_plugin(url, wait=True)
         if not files:
             raise Exception('No data returned from plugin')
 
@@ -155,7 +155,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         url = add_url_args(url, _data_path=data_path, _headers=json.dumps(self._headers))
 
         log.debug('PLUGIN MANIFEST MIDDLEWARE REQUEST: {}'.format(url))
-        dirs, files = xbmcvfs.listdir(url)
+        dirs, files = run_plugin(url, wait=True)
+        if not files:
+            raise Exception('No data returned from plugin')
 
         path = unquote_plus(files[0])
         split = path.split('|')
@@ -344,10 +346,22 @@ class RequestHandler(BaseHTTPRequestHandler):
         root = parseString(data.encode('utf8'))
         mpd = root.getElementsByTagName("MPD")[0]
 
+        mpd_attribs = list(mpd.attributes.keys())
+
         ## Remove publishTime PR: https://github.com/xbmc/inputstream.adaptive/pull/564
-        if 'publishTime' in mpd.attributes.keys():
+        if 'publishTime' in mpd_attribs:
             mpd.removeAttribute('publishTime')
             log.debug('Dash Fix: publishTime removed')
+
+        ## Fix mpd overalseconds bug
+        if mpd.getAttribute('type') == 'dynamic' and 'timeShiftBufferDepth' not in mpd_attribs and 'mediaPresentationDuration' not in mpd_attribs:
+            if 'availabilityStartTime' in mpd_attribs:
+                buffer_seconds = (arrow.now() - arrow.get(mpd.getAttribute('availabilityStartTime'))).total_seconds()
+                mpd.setAttribute('timeShiftBufferDepth', 'PT{}S'.format(buffer_seconds))
+                log.debug('Dash Fix: {}S timeShiftBufferDepth added'.format(buffer_seconds))
+            else:
+                mpd.setAttribute('mediaPresentationDuration', 'PT60S')
+                log.debug('Dash Fix: 60S mediaPresentationDuration added')
 
         ## SORT ADAPTION SETS BY BITRATE ##
         video_sets = []
@@ -583,6 +597,22 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         response.stream.content = mpd
 
+    def _parse_m3u8_sub(self, m3u8, master_url):
+        lines = []
+
+        for line in m3u8.splitlines():
+            if not line.startswith('#') and '/beacon?' in line.lower():
+                parse = urlparse(line)
+                params = dict(parse_qsl(parse.query))
+                for key in params:
+                    if key.lower() == 'redirect_path':
+                        line = params[key]
+                        log.debug('M3U8 Fix: Beacon removed')
+
+            lines.append(line)
+
+        return '\n'.join(lines)
+
     def _parse_m3u8_master(self, m3u8, master_url):
         def _process_media(line):
             attribs = {}
@@ -743,6 +773,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         if is_master:
             m3u8 = self._manifest_middleware(m3u8)
             m3u8 = self._parse_m3u8_master(m3u8, response.url)
+        else:
+            m3u8 = self._parse_m3u8_sub(m3u8, response.url)
 
         base_url = urljoin(response.url, '/')
 
@@ -880,8 +912,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         response = self._proxy_request('POST', url)
         self._output_response(response)
 
-        if not response.ok and url == self._session.get('license_url') and gui.yes_no(_.WV_FAILED, heading=_.IA_WIDEVINE_DRM):
-            inputstream.install_widevine(reinstall=True)
+        # if not response.ok and url == self._session.get('license_url') and gui.yes_no(_.WV_FAILED, heading=_.IA_WIDEVINE_DRM):
+        #     inputstream.install_widevine(reinstall=True)
 
 class Response(object):
     pass
