@@ -1,13 +1,15 @@
-Version 5.1.36 (July 02, 2021)
+Version 5.1.42 (Sep 19, 2021)
 - Code Base Changes:
-    - None
+    - Fix basestring check in helper
 
 - Resolvers Added:
-    - UpVideo
-    - VUpload
+    - filerio
+    - brupload
+    - fastdrive
+    - pandafiles
  
 - Resolvers Fixed/Updated:
-    - clicknupload
+    - FEmbed
 
 - Resolvers Removed
     - None
